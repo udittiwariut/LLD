@@ -3,10 +3,10 @@ package vendingmachine;
 import java.util.HashMap;
 
 public class Inventory {
-    private static HashMap<Product, Integer> productQuantities;
+    private final HashMap<Product, Integer> productQuantities;
 
     public Inventory() {
-        this.productQuantities = new HashMap<>();
+        productQuantities = new HashMap<>();
     }
 
     public void addItem(Product product, int quantity) {
@@ -21,7 +21,7 @@ public class Inventory {
         productQuantities.put(product, productQuantities.get(product) + 1);
     }
 
-    public static int getProductQuantities(Product product) {
+    public int getProductQuantities(Product product) {
         return productQuantities.get(product);
     }
 

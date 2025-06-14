@@ -1,7 +1,5 @@
 package vendingmachine;
 
-import java.lang.annotation.Retention;
-
 public class VendingMachine {
 
     private static VendingMachine instance;
@@ -20,52 +18,102 @@ public class VendingMachine {
         readyState = new ReadyState(this);
         dispenseState = new DispenseState(this);
         returnChangeState = new ReturnChangeState(this);
-        currentState = idleState;
+        crrState = idleState;
         selectedProduct = null;
         totalPayment = 0.0;
     }
 
-    public void setState(VendingMachineState state) {
-        crrState = state;
+    public static VendingMachine getInsVendingMachineInstance() {
+        if (instance == null)
+            instance = new VendingMachine();
+
+        return instance;
     }
 
-    public void setSelectedProduct(Product product) {
-        selectedProduct = product;
+    public Product addProduct(String name, double price, int quantity) {
+        Product product = new Product(name, price);
+        inventory.addItem(product, quantity);
+        return product;
     }
 
-    public Product getSelectedProduct() {
-        return this.selectedProduct;
+    public void selectProduct(Product product) {
+        crrState.selectProduct(product);
     }
 
-    public Inventory getInvontry() {
-        return this.inventory;
+    public void insertCoin(Coin coin) {
+        crrState.insertCoin(coin);
     }
 
-    public double getTotalPayment() {
-        return this.totalPayment;
+    public void insertNote(Note note) {
+        crrState.insertNote(note);
     }
 
-    public VendingMachineState getState(State state) {
+    public void dispenseProduct() {
+        crrState.dispenseProduct();
+    }
+
+    public void returnChange() {
+        crrState.returnChange();
+    }
+
+    VendingMachineState getState(State state) {
         VendingMachineState changedState = null;
+
         switch (state) {
-            case READY:
-                changedState = this.readyState;
-            case DISPENSE:
-                changedState = this.dispenseState;
-            case RETURN:
-                changedState = this.returnChangeState;
-            case IDEAL:
-                changedState = this.idleState;
+            case READY -> changedState = this.readyState;
+            case DISPENSE -> changedState = this.dispenseState;
+
+            case RETURN -> changedState = this.returnChangeState;
+
+            case IDEAL -> changedState = this.idleState;
+
         }
+
         return changedState;
     }
 
-    public void addCoin(Coin coin) {
-        this.totalPayment += coin.getValue();
+    void setState(VendingMachineState state) {
+        crrState = state;
     }
 
-    public void addNote(Note note) {
-        this.totalPayment += note.getValue();
+    void setSelectedProduct(Product product) {
+        selectedProduct = product;
+    }
+
+    Product getSelectedProduct() {
+        return this.selectedProduct;
+    }
+
+    Inventory getInvontry() {
+        return this.inventory;
+    }
+
+    double getTotalPayment() {
+        return this.totalPayment;
+    }
+
+    void addCoin(Coin coin) {
+        totalPayment += coin.getValue();
+    }
+
+    void addNote(Note note) {
+        totalPayment += note.getValue();
+    }
+
+    void resetTotalPayment() {
+        totalPayment = 0.0;
+    }
+
+    void deSelectSeclectedProduct() {
+        this.selectedProduct = null;
+    }
+
+    VendingMachineState getCrruntState() {
+        return this.crrState;
+    }
+
+    boolean isValidPayment() {
+        return this.getTotalPayment() >= this.getSelectedProduct().getPrice();
     }
 
 }

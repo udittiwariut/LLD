@@ -27,8 +27,15 @@ public class ReturnChangeState implements VendingMachineState {
         System.out.println("Product already dispensed. Please collect the change.");
     }
 
+    @Override
     public void returnChange() {
-        double change = this. - this.vendingMachine.getSelectedProduct().getPrice();
+        double change = this.vendingMachine.getTotalPayment() - this.vendingMachine.getSelectedProduct().getPrice();
+        System.out.println("Please collect your change " + change);
+        this.vendingMachine.setState(this.vendingMachine.getState(State.IDEAL));
+        this.vendingMachine.setSelectedProduct(null);
+        this.vendingMachine.resetTotalPayment();
+        vendingMachine.deSelectSeclectedProduct();
+
     }
 
 }
